@@ -49,7 +49,7 @@ class Client
      * @param string $vhost
      * @return array
      */
-    public function alivenessTest($vhost)
+    public function alivenessTest(string $vhost): array
     {
         return $this->send(sprintf('/api/aliveness-test/%s', urlencode($vhost)));
     }
@@ -59,7 +59,7 @@ class Client
      *
      * @return array
      */
-    public function overview()
+    public function overview(): array
     {
         return $this->send('/api/overview');
     }
@@ -69,7 +69,7 @@ class Client
      *
      * @return array
      */
-    public function extensions()
+    public function extensions(): array
     {
         return $this->send('/api/extensions');
     }
@@ -86,9 +86,9 @@ class Client
      * For convenience you may upload a file from a browser to this URI (i.e. you can use multipart/form-data as well as
      * application/json) in which case the definitions should be uploaded as a form field named "file".
      *
-     * @return mixed
+     * @return array
      */
-    public function definitions()
+    public function definitions(): array
     {
         return $this->send('/api/definitions');
     }
@@ -96,7 +96,7 @@ class Client
     /**
      * @return Api\Connection
      */
-    public function connections()
+    public function connections(): Api\Connection
     {
         return new Api\Connection($this);
     }
@@ -104,7 +104,7 @@ class Client
     /**
      * @return Api\Channel
      */
-    public function channels()
+    public function channels(): Api\Channel
     {
         return new Api\Channel($this);
     }
@@ -112,7 +112,7 @@ class Client
     /**
      * @return Api\Consumer
      */
-    public function consumers()
+    public function consumers(): Api\Consumer
     {
         return new Api\Consumer($this);
     }
@@ -120,7 +120,7 @@ class Client
     /**
      * @return Api\Exchange
      */
-    public function exchanges()
+    public function exchanges(): Api\Exchange
     {
         return new Api\Exchange($this);
     }
@@ -128,7 +128,7 @@ class Client
     /**
      * @return Api\Queue
      */
-    public function queues()
+    public function queues(): Api\Queue
     {
         return new Api\Queue($this);
     }
@@ -136,7 +136,7 @@ class Client
     /**
      * @return Api\Vhost
      */
-    public function vhosts()
+    public function vhosts(): Api\Vhost
     {
         return new Api\Vhost($this);
     }
@@ -144,7 +144,7 @@ class Client
     /**
      * @return Api\Binding
      */
-    public function bindings()
+    public function bindings(): Api\Binding
     {
         return new Api\Binding($this);
     }
@@ -152,7 +152,7 @@ class Client
     /**
      * @return Api\User
      */
-    public function users()
+    public function users(): Api\User
     {
         return new Api\User($this);
     }
@@ -160,7 +160,7 @@ class Client
     /**
      * @return Api\Permission
      */
-    public function permissions()
+    public function permissions(): Api\Permission
     {
         return new Api\Permission($this);
     }
@@ -168,7 +168,7 @@ class Client
     /**
      * @return Api\Parameter
      */
-    public function parameters()
+    public function parameters(): Api\Parameter
     {
         return new Api\Parameter($this);
     }
@@ -176,7 +176,7 @@ class Client
     /**
      * @return Api\Policy
      */
-    public function policies()
+    public function policies(): Api\Policy
     {
         return new Api\Policy($this);
     }
@@ -184,7 +184,7 @@ class Client
     /**
      * @return array
      */
-    public function whoami()
+    public function whoami(): array
     {
         return $this->send('/api/whoami');
     }
@@ -196,7 +196,7 @@ class Client
      * @param string|resource|array $body Entity body of request (POST/PUT) or response (GET)
      * @return array
      */
-    public function send($endpoint, $method = 'GET', array $headers = [], $body = null)
+    public function send(string $endpoint, string $method = 'GET', array $headers = [], $body = null)
     {
         if (null !== $body) {
             $body = json_encode($body);
