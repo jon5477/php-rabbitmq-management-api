@@ -5,10 +5,11 @@ namespace RabbitMq\ManagementApi;
 use Http\Client\Common\Plugin\AuthenticationPlugin;
 use Http\Client\Common\Plugin\HeaderDefaultsPlugin;
 use Http\Client\Common\PluginClient;
-use Http\Client\HttpClient;
-use Http\Discovery\HttpClientDiscovery;
-use Http\Discovery\MessageFactoryDiscovery;
+use Http\Discovery\Psr17FactoryDiscovery;
+use Http\Discovery\Psr18ClientDiscovery;
 use Http\Message\Authentication\BasicAuth;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
 
 /**
  * ManagementApi
@@ -17,26 +18,21 @@ use Http\Message\Authentication\BasicAuth;
  */
 class Client
 {
-    /**
-     * @var HttpClient
-     */
-    protected $client;
-    protected $messageFactory;
-    protected $baseUrl;
+    protected ClientInterface $client;
+    protected RequestFactoryInterface $requestFactory;
+    protected string $baseUrl;
 
-    /**
-     * @param HttpClient $client
-     * @param string $baseUrl
-     * @param string $username
-     * @param string $password
-     */
-    public function __construct(HttpClient $client = null, $baseUrl = 'http://localhost:15672', $username = 'guest', $password = 'guest')
-    {
+    public function __construct(
+        ClientInterface $client = null,
+        string $baseUrl = 'http://localhost:15672',
+        string $username = 'guest',
+        string $password = 'guest'
+    ) {
         $this->baseUrl = $baseUrl;
-        $this->messageFactory = MessageFactoryDiscovery::find();
+        $this->requestFactory = Psr17FactoryDiscovery::findRequestFactory();
 
         $this->client = new PluginClient(
-            $client ?: HttpClientDiscovery::find(), [
+            $client ?: Psr18ClientDiscovery::find(), [
             new AuthenticationPlugin(new BasicAuth($username, $password)),
             new HeaderDefaultsPlugin(['Content-Type' => 'application/json'])
         ]);
@@ -206,7 +202,7 @@ class Client
             $body = json_encode($body);
         }
 
-        $request = $this->messageFactory->createRequest($method, $this->baseUrl . $endpoint, $headers, $body);
+        $request = $this->requestFactory->createRequest($method, $this->baseUrl . $endpoint, $headers, $body);
         $response = $this->client->sendRequest($request);
 
         return json_decode($response->getBody()->getContents(), true);
